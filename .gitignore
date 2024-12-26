@@ -1,0 +1,9 @@
+env/
+.streamlit/
+__/pycache/__
+*.pyc
+*.log
+*.vbs
+config.toml
+.gitignore
+pages/test.py
