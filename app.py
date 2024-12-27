@@ -55,11 +55,11 @@ new_resource_page = st.Page(
     icon=":material/note_add:",
 )
 
-test = st.Page(
-    page="pages/test.py",
-    title="Test",
-    icon=":material/bug_report:",
-)
+# test = st.Page(
+#     page="pages/test.py",
+#     title="Test",
+#     icon=":material/bug_report:",
+# )
 
 pg = st.navigation(
     {   
