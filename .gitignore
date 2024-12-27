@@ -5,7 +5,6 @@ __/pycache/__
 *.log
 *.vbs
 config.toml
-.gitignore
 pages/test.py
 requirements.txt
 *.pdf
