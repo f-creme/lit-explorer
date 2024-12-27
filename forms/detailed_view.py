@@ -38,18 +38,21 @@ def show_resources_details(resourceID):
                             """
             comments = pd.read_sql(comments_query, conn)
 
-            readers_login = articles['Reader'].values[0].split(", ")
-            readers_names = ""
+            if articles['Reader'].values[0] == None:
+                readers_names = "No readers recorded"
+            else:
+                readers_login = articles['Reader'].values[0].split(", ")
+                readers_names = ""
 
-            for login in readers_login:
-                reader_query = f"SELECT [Username] FROM [Users] WHERE [UserLogin] = '{login}';"
-                try:
-                    reader_name = pd.read_sql(reader_query, conn)["Username"].iloc[0]
-                    readers_names = readers_names + str(reader_name) + ", "
-                except:
-                    error = 0
-                
-            readers_names = readers_names[:-2]
+                for login in readers_login:
+                    reader_query = f"SELECT [Username] FROM [Users] WHERE [UserLogin] = '{login}';"
+                    try:
+                        reader_name = pd.read_sql(reader_query, conn)["Username"].iloc[0]
+                        readers_names = readers_names + str(reader_name) + ", "
+                    except:
+                        error = 0
+                    
+                readers_names = readers_names[:-2]
             
             conn.close()
 

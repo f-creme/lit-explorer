@@ -28,13 +28,13 @@ def mark_as_read(resource_id, resource_title):
                 cursor = conn.cursor()
 
                 # Update the Reader column in the Resources table
-                st.write(new_reader)
+                
                 update_query = f"""
                 UPDATE Resources
                 SET Reader = '{new_reader}'
                 WHERE ResourceID = {resource_id};
                 """
-                st.write(update_query)
+                
                 cursor.execute(update_query)
                 conn.commit()
                 st.success(f"Resource '{resource_title}' marked as read by {st.session_state.userName}.")
