@@ -7,3 +7,6 @@ __/pycache/__
 config.toml
 .gitignore
 pages/test.py
+requirements.txt
+*.pdf
+Installation and User Guide.md
