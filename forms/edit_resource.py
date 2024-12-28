@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 import pyodbc
+from datetime import datetime
 
 @st.dialog("Edit Resource", width="large")
 def edit_resource(resource_id):
@@ -63,14 +64,14 @@ def edit_resource(resource_id):
 
                 try:
                     # Add the contribution to the Contributions table
-                    query = "INSERT INTO Contributions (ResourceID, UserLogin, ContributionType) VALUES (?, ?, ?);"
-                    params = (resource_id, st.session_state.userLogin, "Edit Resource")
+                    query = "INSERT INTO Contributions (ResourceID, UserLogin, ContributionType, ContributionDate) VALUES (?, ?, ?, ?);"
+                    params = (resource_id, st.session_state.userLogin, "Edit Resource", datetime.now())
                     cursor.execute(query, params)
 
                     conn.commit()
                     # Display success message
                     st.success(f"Resource '{title}' updated successfully.")
-                    
+
                 except Exception as e:
                     st.error(f"An error as occured when saving the contribution: {e}")
 
