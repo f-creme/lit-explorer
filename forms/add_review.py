@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 import pyodbc
+from datetime import datetime
 
 def edit_global_rating(resourceID):
     try:
@@ -37,8 +38,8 @@ def edit_global_rating(resourceID):
 def add_contribution(resourceID, userLogin, contributionType, conn):
     cursor = conn.cursor()
     try:
-        query = "INSERT INTO Contributions (ResourceID, UserLogin, ContributionType) VALUES (?, ?, ?);"
-        params = (resourceID, userLogin, contributionType)
+        query = "INSERT INTO Contributions (ResourceID, UserLogin, ContributionType, ContributionDate) VALUES (?, ?, ?, ?);"
+        params = (resourceID, userLogin, contributionType, datetime.now())
         cursor.execute(query, params)
         conn.commit()
     except Exception as e:
@@ -118,7 +119,7 @@ def add_review(resourceID, user):
 
                     # Add the contribution to the Contributions table
                     add_contribution(resourceID, user, "Edit Review", conn)
-                    
+
                     st.success("Review updated successfully.")
 
                     edit_global_rating(resourceID)
