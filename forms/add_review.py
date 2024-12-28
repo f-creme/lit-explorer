@@ -42,8 +42,14 @@ def add_contribution(resourceID, userLogin, contributionType, conn):
         params = (resourceID, userLogin, contributionType, datetime.now())
         cursor.execute(query, params)
         conn.commit()
+
+        query = f"SELECT TOP 1 ContributionID FROM Contributions WHERE ResourceID = {resourceID} AND UserLogin = '{userLogin}' AND ContributionType = '{contributionType}' ORDER BY ContributionDate DESC;"
+        contributionID = cursor.execute(query).fetchone()[0]
+
     except Exception as e:
         st.error(f"An error as occured when saving the contribution: {e}")
+    
+    return contributionID
 
 @st.dialog("Add a Review", width="large")
 def add_review(resourceID, user):
@@ -70,21 +76,20 @@ def add_review(resourceID, user):
                 username = st.text_input("User", value=username)
                 submit = st.form_submit_button("Save Review")
                 if submit:
-                    # Update the Reviews table using parameters
+                    # Add the contribution to the Contributions table
+                    contributionID = add_contribution(resourceID, user, "Add Review", conn)
                     
+                    # Update the Reviews table using parameters
                     update_query = """
-                    INSERT INTO Reviews (ResourceID, Rating, Review, UserLogin, ReviewDate)
-                    VALUES (?, ?, ?, ?, ?);
+                    INSERT INTO Reviews (ResourceID, Rating, Review, UserLogin, ReviewDate, ContributionID)
+                    VALUES (?, ?, ?, ?, ?, ?);
                     """
                     params = (
-                        resourceID, int(rating), review, user, date
+                        resourceID, int(rating), review, user, date, contributionID
                     )
                     error_message = "An error as occured when saving the review."
                     cursor.execute(update_query, params)
                     conn.commit()
-
-                    # Add the contribution to the Contributions table
-                    add_contribution(resourceID, user, "Add Review", conn)
 
                     st.success("Review added successfully.")
 
@@ -101,24 +106,25 @@ def add_review(resourceID, user):
 
                 submit = st.form_submit_button("Update Review")
                 if submit:
+                    # Add the contribution to the Contributions table
+                    contributionID = add_contribution(resourceID, user, "Edit Review", conn)
+
                     # Update the Reviews table using parameters
                     update_query = """
                     UPDATE Reviews
                     SET [ReviewDate] = ?,
                         [Rating] = ?,
                         [Review] = ?,
-                        [UserLogin] = ?
+                        [UserLogin] = ?, 
+                        [ContributionID] = ? 
                     WHERE ReviewID = ?;
                     """
                     params = (
-                        date, int(rating), review, user, reviewID
+                        date, int(rating), review, user, reviewID, contributionID
                     )
                     error_message = "An error as occured when updating the review."
                     cursor.execute(update_query, params)
                     conn.commit()
-
-                    # Add the contribution to the Contributions table
-                    add_contribution(resourceID, user, "Edit Review", conn)
 
                     st.success("Review updated successfully.")
 
