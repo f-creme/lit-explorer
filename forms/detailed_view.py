@@ -87,12 +87,18 @@ def show_resources_details(resourceID):
                     st.info("No comments available.")
             else:
                 for i in range(comments.shape[0]):
-                    st.write(f"**{comments.loc[i,'Username']}** - {np.datetime64(comments.loc[i,'ReviewDate'], 'D').astype('datetime64[D]').astype(datetime).strftime("%d %b %Y")} ({print_stars(comments.loc[i,'Rating'])})")
-                    st.write(f"{comments.loc[i,'Review']}")
-                    st.write("")
+                    st.markdown(f"""
+                    <div style="background-color: white; padding: 10px; border: 1px solid lightgray; border-radius: 5px;">
+                        <p style="margin: 0;">
+                            <strong>{comments.loc[i,'Username']}</strong> - {np.datetime64(comments.loc[i,'ReviewDate'], 'D').astype('datetime64[D]').astype(datetime).strftime("%d %b %Y")} ({print_stars(comments.loc[i,'Rating'])})
+                        </p>
+                        <p style="margin: 0;"> {comments.loc[i,'Review']} </p>
+                    </div>
+                    <p style="margin: 0;">&nbsp;</p>
+                    """, unsafe_allow_html=True)
 
-
-            st.form_submit_button("Close", on_click=st.stop)
+            st.write("")
+            st.form_submit_button("Close", use_container_width=True, type="primary", on_click=st.stop, help="Click on the cross at top right if the window does not close.")
 
         except Exception as e:
             st.error(f"Unable to connect to the database: {e}")
