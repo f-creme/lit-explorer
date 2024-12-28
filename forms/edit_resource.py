@@ -59,11 +59,23 @@ def edit_resource(resource_id):
                     keywords, summary, resource_id
                 )
                 cursor.execute(update_query, params)
-                conn.commit()
-                st.success(f"Resource '{title}' updated successfully.")
+                
+
+                try:
+                    # Add the contribution to the Contributions table
+                    query = "INSERT INTO Contributions (ResourceID, UserLogin, ContributionType) VALUES (?, ?, ?);"
+                    params = (resource_id, st.session_state.userLogin, "Edit Resource")
+                    cursor.execute(query, params)
+
+                    conn.commit()
+                    # Display success message
+                    st.success(f"Resource '{title}' updated successfully.")
+                    
+                except Exception as e:
+                    st.error(f"An error as occured when saving the contribution: {e}")
 
         except Exception as e:
-            st.error(f"Error: {e}")
+            st.error(f"An error as occured when saving the modifications: {e}")
 
         finally:
             conn.close()
