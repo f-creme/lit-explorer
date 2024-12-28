@@ -2,9 +2,11 @@ import streamlit as st
 import pandas as pd
 import pyodbc
 
+# Page title
 st.title("Add a new resource")
 st.header(f"📂 Library about  Nitrosamines :")
 
+# Input fields
 title = st.text_input("Title")
 authors = st.text_input("Authors")
 journal = st.text_input("Journal")
@@ -22,6 +24,7 @@ reader = st.session_state.userLogin
 
 submit = st.button("Save Resource", type="primary", use_container_width=True)
 
+# If the user clicks the "Save Resource" button
 if submit:
     try:
         # Connection string for Access database
@@ -31,7 +34,7 @@ if submit:
         cursor = conn.cursor()
 
         # Insert into the Resources table using parameters
-        insert_query = """
+        query = """
         INSERT INTO Resources
         ([Title], [Authors], [Journal], [Date], [DOI], [Document Type], [Article type], [Application Field], [Category], [Sub Category], [Specific to Nitrosamines], [Keywords], [Summary], [Reader])
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
@@ -43,11 +46,31 @@ if submit:
             keywords, summary, reader
         )
 
-        cursor.execute(insert_query, params)
+        cursor.execute(query, params)
         conn.commit()
-        conn.close()
 
-        st.sidebar.success("Resource added successfully.")
+        # Get the ResourceID of the newly added resource
+        try:
+            query = f"SELECT ResourceID FROM Resources WHERE Title = '{title}' AND [Date] = {date}"
+            resource_id = cursor.execute(query).fetchone()[0]
+            
+            try:
+                # Insert into list of contributions
+                query = "INSERT INTO Contributions (ResourceID, ContributionType, UserLogin) VALUES (?, ?, ?)"
+                params = (resource_id, "New Resource", st.session_state.userLogin)
+                cursor.execute(query, params)
+
+                conn.commit()
+                conn.close()
+
+                # Success message
+                st.sidebar.success("Resource added successfully.")
+            
+            except Exception as e:
+                st.sidebar.error(f"An error occurred when adding the collaboration:\n {e}")
+        
+        except Exception as e:
+            st.sidebar.error(f"An error occurred when retrieving the ResourceID:\n {e}")
     
     except Exception as e:
-        st.sidebar.error(f"An error occurred: {e}")
+        st.sidebar.error(f"An error occurred when adding the resource to the database:\n {e}")
