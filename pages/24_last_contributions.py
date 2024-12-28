@@ -15,6 +15,7 @@ st.title("Working History")
 st.write("See here the last contributions of users.")
 
 num_contributions = st.slider("Number of contributions", 1, 50, 1, help="Select the number of contributions to display")
+st.write("")
 
 try:
     # Read the last contributions from the database
@@ -39,15 +40,49 @@ except Exception as e:
 
 for contribution in contributions.iterrows():
     if contribution[1]["ContributionType"] == "New Resource":
-        contribution_message = f"added a new resource : \n*{contribution[1]['Title']}*"
-    elif contribution[1]["ContributionType"] == "Edit Resource":
-        contribution_message = f"edited details of *{contribution[1]['Title']}*"
-    elif contribution[1]["ContributionType"] == "Add Review":
-        contribution_message = f"""added a review to *{contribution[1]['Title']}*: 
-                                \n({print_stars(contribution[1]['ReviewRating'])}) {contribution[1]['Review']}"""
-    elif contribution[1]["ContributionType"] == "Edit Review":
-        contribution_message = f"""edited a review to *{contribution[1]['Title']}*: 
-                                \n({print_stars(contribution[1]['ReviewRating'])}) {contribution[1]['Review']}"""
+        st.markdown(f"""
+        <div style="background-color: white; padding: 10px; border: 1px solid lightgray; border-radius: 5px;">
+            <p style="margin: 0;">
+                &#127381;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <strong>{contribution[1]['DateOfContribution']}</strong> {contribution[1]['Username']} added a new resource : <i>{contribution[1]['Title']}</i>
+            </p>
+        </div>
+        <p style="margin: 0;">&nbsp;</p>
+        """, unsafe_allow_html=True)
 
-    st.write(f"**{contribution[1]['DateOfContribution']}** {contribution[1]['Username']} {contribution_message}")
-    st.markdown("---")
+    elif contribution[1]["ContributionType"] == "Edit Resource":
+        st.markdown(f"""
+        <div style="background-color: white; padding: 10px; border: 1px solid lightgray; border-radius: 5px;">
+            <p style="margin: 0;">
+                &#128221;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <strong>{contribution[1]['DateOfContribution']}</strong> {contribution[1]['Username']} edited details of : <i>{contribution[1]['Title']}</i>
+            </p>
+        </div>
+        <p style="margin: 0;">&nbsp;</p>
+        """, unsafe_allow_html=True)
+
+    elif contribution[1]["ContributionType"] == "Add Review":
+        st.markdown(f"""
+        <div style="background-color: white; padding: 10px; border: 1px solid lightgray; border-radius: 5px;">
+            <p style="margin: 0;">
+                &#128161;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <strong>{contribution[1]['DateOfContribution']}</strong> {contribution[1]['Username']} added a review to <i>{contribution[1]['Title']}</i>
+            </p>
+            <p style="margin: 0; text-align: center;">{print_stars(contribution[1]['ReviewRating'])}</p>
+            <p style="margin: 0;">&laquo; {contribution[1]['Review']} &raquo;</p>
+        </div>
+        <p style="margin: 0;">&nbsp;</p>
+        """, unsafe_allow_html=True)
+
+    elif contribution[1]["ContributionType"] == "Edit Review":
+        st.markdown(f"""
+        <div style="background-color: white; padding: 10px; border: 1px solid lightgray; border-radius: 5px;">
+            <p style="margin: 0;">
+                &#128161;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <strong>{contribution[1]['DateOfContribution']}</strong> {contribution[1]['Username']} edited a review to <i>{contribution[1]['Title']}</i>
+            </p>
+            <p style="margin: 0; text-align: center;">{print_stars(contribution[1]['ReviewRating'])}</p>
+            <p style="margin: 0;">&laquo; {contribution[1]['Review']} &raquo;</p>
+        </div>
+        <p style="margin: 10;">&nbsp;</p>
+        """, unsafe_allow_html=True)

@@ -34,16 +34,21 @@ if "dbPathway" in st.session_state:
 
         # Display the results in a table
         for index, row in recent_reviews.iterrows():
-            st.subheader(f"**{row['Title']}**")
-            st.write(f"**Authors:** {row['Authors']}")
-            # Handle formatting of the Date column
+
             if isinstance(row['Date'], pd.Timestamp):
                 formatted_date = row['Date'].strftime("%d %b. %Y")
             else:
                 formatted_date = datetime.strptime(row['Date'], "%Y-%m-%d").strftime("%d %b. %Y")
-            st.write(f"**{row['Username']}** - {formatted_date} ({"⭐️" * int(row['Rating'])})")
-            st.write(f"{row['Review']}")
-            st.markdown("---")
+
+            st.markdown(f"""
+            <div style="background-color: white; padding: 10px; border: 1px solid lightgray; border-radius: 5px;">
+                <h4 style="margin: 0;">{row['Title']}</h1>
+                <p><i>By {row['Authors']}</i></p>
+                <p style="margin: 0;"><strong>{row['Username']}</strong> - {formatted_date} ({"⭐️" * int(row['Rating'])}{"✰" * (5 - int(row['Rating']))})</p>
+                <p style="margin: 0;">&laquo; {row['Review']}  &raquo;</p>
+            </div>
+            <p style="margin: 10;">&nbsp;</p>
+            """, unsafe_allow_html=True)
 
     except Exception as e:
         st.error(f"Unable to connect to the database: {e}")
