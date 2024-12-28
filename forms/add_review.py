@@ -106,11 +106,16 @@ def add_review(resourceID, user):
 
                 submit = st.form_submit_button("Update Review")
                 if submit:
+                    # Delete the previous contribution about this resource
+                    query = f"DELETE FROM Contributions WHERE ContributionID IN (SELECT ContributionID FROM Contributions WHERE UserLogin = '{user}' AND ResourceID = {resourceID} AND ContributionType LIKE '%Review%');"
+                    cursor.execute(query)
+                    conn.commit()
+
                     # Add the contribution to the Contributions table
                     contributionID = add_contribution(resourceID, user, "Edit Review", conn)
 
                     # Update the Reviews table using parameters
-                    update_query = """
+                    update_query = f"""
                     UPDATE Reviews
                     SET [ReviewDate] = ?,
                         [Rating] = ?,
@@ -120,9 +125,10 @@ def add_review(resourceID, user):
                     WHERE ReviewID = ?;
                     """
                     params = (
-                        date, int(rating), review, user, reviewID, contributionID
+                        date, int(rating), review, user, contributionID, reviewID
                     )
                     error_message = "An error as occured when updating the review."
+                    
                     cursor.execute(update_query, params)
                     conn.commit()
 
