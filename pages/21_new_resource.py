@@ -1,6 +1,6 @@
 import streamlit as st
-import pandas as pd
 import pyodbc
+from datetime import datetime
 
 # Page title
 st.title("Add a new resource")
@@ -56,8 +56,8 @@ if submit:
             
             try:
                 # Insert into list of contributions
-                query = "INSERT INTO Contributions (ResourceID, ContributionType, UserLogin) VALUES (?, ?, ?)"
-                params = (resource_id, "New Resource", st.session_state.userLogin)
+                query = "INSERT INTO Contributions (ResourceID, ContributionType, UserLogin, ContributionDate) VALUES (?, ?, ?, ?)"
+                params = (resource_id, "New Resource", st.session_state.userLogin, datetime.now())
                 cursor.execute(query, params)
 
                 conn.commit()
