@@ -91,6 +91,11 @@ def add_review(resourceID, user):
                     cursor.execute(update_query, params)
                     conn.commit()
 
+                    # Update the number of contributions in the Users table
+                    query = f"UPDATE Users SET UserContributions = UserContributions + 1 WHERE UserLogin = '{st.session_state.userLogin}'"
+                    cursor.execute(query)
+                    conn.commit()
+
                     st.success("Review added successfully.")
 
                 edit_global_rating(resourceID)

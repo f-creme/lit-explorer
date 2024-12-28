@@ -72,6 +72,11 @@ def edit_resource(resource_id):
                     # Display success message
                     st.success(f"Resource '{title}' updated successfully.")
 
+                    # Update the number of contributions in the Users table
+                    query = f"UPDATE Users SET UserContributions = UserContributions + 1 WHERE UserLogin = '{st.session_state.userLogin}'"
+                    cursor.execute(query)
+                    conn.commit()
+
                 except Exception as e:
                     st.error(f"An error as occured when saving the contribution: {e}")
 
