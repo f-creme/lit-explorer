@@ -34,7 +34,8 @@ def show_resources_details(resourceID):
                                     [Users].[Username]
                                 FROM [Reviews]
                                 INNER JOIN [Users] ON [Reviews].[UserLogin] = [Users].[UserLogin] 
-                                WHERE [Reviews].[ResourceID] = {resourceID};
+                                WHERE [Reviews].[ResourceID] = {resourceID} 
+                                ORDER BY [Reviews].[ReviewDate] DESC;
                             """
             comments = pd.read_sql(comments_query, conn)
 
