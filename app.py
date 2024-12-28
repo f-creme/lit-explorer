@@ -38,7 +38,7 @@ profile_page = st.Page(
 
 last_interaction_page = st.Page(
     page="pages/23_last_interaction.py",
-    title="Last Interaction",
+    title="Last Reviews",
     icon=":material/chat:",
 )
 
