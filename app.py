@@ -71,7 +71,7 @@ pg = st.navigation(
     {   
         "": [homepage_page, database_page, login_page],
         "Profile": [profile_page], 
-        "Project": [library_page, new_resource_page, last_interaction_page, last_contributions_page]
+        "Project": [library_page, new_resource_page, last_contributions_page]
     }
 )
 
