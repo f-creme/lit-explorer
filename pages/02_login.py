@@ -35,18 +35,24 @@ if log_button:
 
         query = "SELECT UserLogin, Username, UserRole, UserMail FROM Users;"
         users = pd.read_sql(query, conn)
+        query = f"SELECT UserID FROM Users WHERE UserLogin = '{st.session_state.userLogin}';"
+        cursor = conn.cursor()
+        cursor.execute(query)
+        user_id = cursor.fetchall()[0][0]
 
         if st.session_state.userLogin in users["UserLogin"].values:
             user = users[users["UserLogin"] == st.session_state.userLogin].iloc[0]
             st.session_state.userName = user["Username"]
             st.session_state.userRole = user["UserRole"]
             st.session_state.userMail = user["UserMail"]
+            st.session_state.userID = user_id
 
             with open("config.toml", "w") as f:
                 data["user"]["userName"] = st.session_state.userName
                 data["user"]["userLogin"] = st.session_state.userLogin
                 data["user"]["userRole"] = st.session_state.userRole
                 data["user"]["userMail"] = st.session_state.userMail
+                data["user"]["userID"] = st.session_state.userID
 
                 toml.dump(data, f)
 
@@ -109,16 +115,22 @@ if register_button:
         )
         conn.commit()
 
+        query = f"SELECT UserID FROM Users WHERE UserLogin = '{login}';"
+        cursor.execute(query)
+        user_id = cursor.fetchall()[0][0]
+
         with open("config.toml", "w") as f:
             data["user"]["userName"] = name
             data["user"]["userLogin"] = login
             data["user"]["userRole"] = role
             data["user"]["userMail"] = mail
+            data["user"]["userID"] = user_id
 
             st.session_state.userName = data["user"]["userName"]
             st.session_state.userLogin = data["user"]["userLogin"]
             st.session_state.userRole = data["user"]["userRole"]
             st.session_state.userMail = data["user"]["userMail"]
+            st.session_state.userID = data["user"]["userID"]
 
             toml.dump(data, f)
 
