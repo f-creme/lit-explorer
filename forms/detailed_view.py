@@ -39,21 +39,11 @@ def show_resources_details(resourceID):
                             """
             comments = pd.read_sql(comments_query, conn)
 
-            if articles['Reader'].values[0] == None:
-                readers_names = "No readers recorded"
-            else:
-                readers_login = articles['Reader'].values[0].split(", ")
-                readers_names = ""
-
-                for login in readers_login:
-                    reader_query = f"SELECT [Username] FROM [Users] WHERE [UserLogin] = '{login}';"
-                    try:
-                        reader_name = pd.read_sql(reader_query, conn)["Username"].iloc[0]
-                        readers_names = readers_names + str(reader_name) + ", "
-                    except:
-                        error = 0
-                    
-                readers_names = readers_names[:-2]
+            # Load Readers
+            readers_query = f"""SELECT Username 
+                                FROM Users LEFT JOIN ReadingList ON Users.UserID = ReadingList.UserID 
+                                WHERE ResourceID = {resourceID} AND Status = 0;"""
+            readers = pd.read_sql(readers_query, conn)
             
             conn.close()
 
@@ -80,7 +70,7 @@ def show_resources_details(resourceID):
             st.write(f"{articles.loc[0,'Summary']}")
 
             st.subheader("Readers")
-            st.write(f"{readers_names}")
+            st.write(f"{', '.join(readers['Username'])}")
 
             st.subheader("Comments")
             if comments.empty:
