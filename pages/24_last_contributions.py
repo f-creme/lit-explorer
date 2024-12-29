@@ -6,15 +6,29 @@ import pyodbc
 # Function to print stars
 def print_stars(rating):
     if isinstance(rating, (int, float, np.floating)):
-        return "⭐️" * int(rating) + "✰" * (5 - int(rating))
+        return "⭐" * int(rating) + "✩" * (5 - int(rating))
     else:
-        return "✰✰✰✰✰"
+        return "✩✩✩✩✩"
 
 # Page title
 st.title("Working History")
 st.write("See here the last contributions of users.")
 
-num_contributions = st.slider("Number of contributions", 1, 50, 1, help="Select the number of contributions to display")
+# Sidebar for filtering
+st.sidebar.title("Filters")
+st.sidebar.write("Select the type of contributions to display.")
+
+# Filter options
+contribution_types = ["New Resource", "Modified Resource", "Review"]
+selected_types = st.sidebar.multiselect(
+    "Contribution Types",
+    options=contribution_types,
+    default=contribution_types,
+    help="Choose the types of contributions you want to display."
+)
+
+# Slider for number of contributions
+num_contributions = st.sidebar.slider("Number of contributions", 1, 50, 10, help="Select the number of contributions to display")
 st.write("")
 
 try:
@@ -23,7 +37,7 @@ try:
         f"DRIVER={{Microsoft Access Driver (*.mdb, *.accdb)}};DBQ={st.session_state.dbPathway};"
     )
     query = f"""
-            SELECT TOP {num_contributions} 
+            SELECT 
                     Users.Username, Contributions.ContributionType, FORMAT(Contributions.ContributionDate, 'DD MMM. YYYY - HH:MM') AS [DateOfContribution], 
                     Resources.Title, Reviews.Rating AS ReviewRating, Reviews.Review AS Review
             FROM ((Users 
@@ -35,54 +49,56 @@ try:
     contributions = pd.read_sql(query, conn)
     conn.close()
 
+    # Map contribution types to the new categories
+    contributions["ContributionType"] = contributions["ContributionType"].replace({
+        "Edit Resource": "Modified Resource",
+        "Add Review": "Review",
+        "Edit Review": "Review"
+    })
+
+    # Filter data based on selected contribution types
+    if selected_types:
+        contributions = contributions[contributions["ContributionType"].isin(selected_types)]
+
+    if num_contributions:
+        contributions = contributions.head(num_contributions)
+
 except Exception as e:
     st.error(f"Unable to connect to the database: {e}")
 
-for contribution in contributions.iterrows():
-    if contribution[1]["ContributionType"] == "New Resource":
+# Display filtered contributions
+for _, contribution in contributions.iterrows():
+    if contribution["ContributionType"] == "New Resource":
         st.markdown(f"""
         <div style="background-color: white; padding: 10px; border: 1px solid lightgray; border-radius: 5px;">
             <p style="margin: 0;">
                 &#127381;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <strong>{contribution[1]['DateOfContribution']}</strong> {contribution[1]['Username']} added a new resource : <i>{contribution[1]['Title']}</i>
+                <strong>{contribution['DateOfContribution']}</strong> {contribution['Username']} added a new resource : <i>{contribution['Title']}</i>
             </p>
         </div>
         <p style="margin: 0;">&nbsp;</p>
         """, unsafe_allow_html=True)
 
-    elif contribution[1]["ContributionType"] == "Edit Resource":
+    elif contribution["ContributionType"] == "Modified Resource":
         st.markdown(f"""
         <div style="background-color: white; padding: 10px; border: 1px solid lightgray; border-radius: 5px;">
             <p style="margin: 0;">
                 &#128221;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <strong>{contribution[1]['DateOfContribution']}</strong> {contribution[1]['Username']} edited details of : <i>{contribution[1]['Title']}</i>
+                <strong>{contribution['DateOfContribution']}</strong> {contribution['Username']} edited details of : <i>{contribution['Title']}</i>
             </p>
         </div>
         <p style="margin: 0;">&nbsp;</p>
         """, unsafe_allow_html=True)
 
-    elif contribution[1]["ContributionType"] == "Add Review":
+    elif contribution["ContributionType"] == "Review":
         st.markdown(f"""
         <div style="background-color: white; padding: 10px; border: 1px solid lightgray; border-radius: 5px;">
             <p style="margin: 0;">
                 &#128161;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <strong>{contribution[1]['DateOfContribution']}</strong> {contribution[1]['Username']} added a review to <i>{contribution[1]['Title']}</i>
+                <strong>{contribution['DateOfContribution']}</strong> {contribution['Username']} added or edited a review for <i>{contribution['Title']}</i>
             </p>
-            <p style="margin: 0; text-align: center;">{print_stars(contribution[1]['ReviewRating'])}</p>
-            <p style="margin: 0;">&laquo; {contribution[1]['Review']} &raquo;</p>
+            <p style="margin: 0; text-align: center;">{print_stars(contribution['ReviewRating'])}</p>
+            <p style="margin: 0;">&laquo; {contribution['Review']} &raquo;</p>
         </div>
         <p style="margin: 0;">&nbsp;</p>
-        """, unsafe_allow_html=True)
-
-    elif contribution[1]["ContributionType"] == "Edit Review":
-        st.markdown(f"""
-        <div style="background-color: white; padding: 10px; border: 1px solid lightgray; border-radius: 5px;">
-            <p style="margin: 0;">
-                &#128161;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <strong>{contribution[1]['DateOfContribution']}</strong> {contribution[1]['Username']} edited a review to <i>{contribution[1]['Title']}</i>
-            </p>
-            <p style="margin: 0; text-align: center;">{print_stars(contribution[1]['ReviewRating'])}</p>
-            <p style="margin: 0;">&laquo; {contribution[1]['Review']} &raquo;</p>
-        </div>
-        <p style="margin: 10;">&nbsp;</p>
         """, unsafe_allow_html=True)
