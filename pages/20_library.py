@@ -44,7 +44,7 @@ if st.session_state.dbPathway:
         st.sidebar.header("Filters")
         filter_title = st.sidebar.text_input("Filter by Title")
         filter_author = st.sidebar.text_input("Filter by Author")
-        filter_year = st.sidebar.slider("Filter by Year", min_value=1900, max_value=2100, value=(1900, 2100))
+        filter_year = st.sidebar.slider("Filter by Year", min_value=1960, max_value=2030, value=(1960, 2030))
         filter_rating = st.sidebar.slider("Filter by Rating", min_value=0, max_value=5, value=(0, 5))
 
         # Dropdown filters for unique values and split columns
@@ -123,24 +123,30 @@ if st.session_state.dbPathway:
             st.write(f"**Keywords:** {row['Keywords']}")
 
             # Button to open article details
-            col3, col4, col5, col6 = st.columns(4)
+            col3, col4, col5, col6, col7 = st.columns(5, vertical_alignment="center")
             with col3:
-                if st.button(f"Detailed View", key=f"details_{row['ResourceID']}", use_container_width=True, type="primary"):
+                if st.button(f":mag_right: View", key=f"details_{row['ResourceID']}", use_container_width=True, type="primary", help="View detailed information about this article"):
                     st.session_state.selected_article = row['ResourceID']
                     show_resources_details(row['ResourceID'])
             with col4:
-                if st.button(f"Mark as read", key=f"reading_{row['ResourceID']}", use_container_width=True):
+                if st.button(f":heavy_check_mark: Read", key=f"reading_{row['ResourceID']}", use_container_width=True, help="Quickly mark as read"):
                     st.session_state.selected_article = row['ResourceID']
                     st.session_state.selected_article_title = row['Title']
                     mark_as_read(row['ResourceID'], row['Title'])
             with col5:
-                if st.button(f"Edit", key=f"edit_{row['ResourceID']}", use_container_width=True):
+                if st.button(f":spiral_note_pad: To list", key=f"reading_list_{row['ResourceID']}", use_container_width=True, help="Add to your reading list"):
                     st.session_state.selected_article = row['ResourceID']
-                    edit_resource(row['ResourceID'])
+                    st.session_state.selected_article_title = row['Title']
+                    st.success(f"Resource '{row['Title']}' added to your reading list.")
             with col6:
-                if st.button(f"Add a review", key=f"review_{row['ResourceID']}", use_container_width=True):
+                if st.button(f":thought_balloon: Review", key=f"review_{row['ResourceID']}", use_container_width=True, help="Add a review"):
                     st.session_state.selected_article = row['ResourceID']
                     add_review(row['ResourceID'], st.session_state.userLogin)
+            with col7:
+                if st.button(f":lower_left_ballpoint_pen: Edit", key=f"edit_{row['ResourceID']}", use_container_width=True, help="Edit this article"):
+                    st.session_state.selected_article = row['ResourceID']
+                    edit_resource(row['ResourceID'])
+
 
             st.markdown("---")
 
