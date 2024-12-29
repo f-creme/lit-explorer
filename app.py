@@ -8,6 +8,7 @@ with open("config.toml", "r") as f:
     st.session_state.userLogin = data["user"]["userLogin"]
     st.session_state.userRole = data["user"]["userRole"]
     st.session_state.userMail = data["user"]["userMail"]
+    st.session_state.userID = data["user"]["userID"]
 
 # General Section : Home Page and Login Page
 homepage_page = st.Page(
