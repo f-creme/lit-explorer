@@ -61,6 +61,12 @@ last_contributions_page = st.Page(
     icon=":material/work_history:",
 )
 
+contributors_page = st.Page(
+    page="pages/25_contributors.py",
+    title="Contributors",
+    icon=":material/people:",
+)
+
 # test = st.Page(
 #     page="pages/test.py",
 #     title="Test",
@@ -70,7 +76,7 @@ last_contributions_page = st.Page(
 pg = st.navigation(
     {   
         "": [homepage_page, database_page, login_page],
-        "Profile": [profile_page], 
+        "Profile": [profile_page, contributors_page], 
         "Project": [library_page, new_resource_page, last_contributions_page]
     }
 )
