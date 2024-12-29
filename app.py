@@ -68,6 +68,12 @@ contributors_page = st.Page(
     icon=":material/people:",
 )
 
+readings_page = st.Page(
+    page="pages/11_readings.py",
+    title="My Readings",
+    icon=":material/menu_book:",
+)
+
 # test = st.Page(
 #     page="pages/test.py",
 #     title="Test",
@@ -77,7 +83,7 @@ contributors_page = st.Page(
 pg = st.navigation(
     {   
         "": [homepage_page, database_page, login_page],
-        "Profile": [profile_page, contributors_page], 
+        "Profile": [profile_page, readings_page, contributors_page], 
         "Project": [library_page, new_resource_page, last_contributions_page]
     }
 )
