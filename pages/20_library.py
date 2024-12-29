@@ -7,6 +7,7 @@ from forms.detailed_view import show_resources_details
 from forms.mark_as_read import mark_as_read
 from forms.edit_resource import edit_resource
 from forms.add_review import add_review
+from forms.reading_list import add_to_reading_list
 
 def print_stars(rating):
     if isinstance(rating, (int, float, np.floating)):
@@ -137,7 +138,7 @@ if st.session_state.dbPathway:
                 if st.button(f":spiral_note_pad: To list", key=f"reading_list_{row['ResourceID']}", use_container_width=True, help="Add to your reading list"):
                     st.session_state.selected_article = row['ResourceID']
                     st.session_state.selected_article_title = row['Title']
-                    st.success(f"Resource '{row['Title']}' added to your reading list.")
+                    add_to_reading_list(row['ResourceID'])
             with col6:
                 if st.button(f":thought_balloon: Review", key=f"review_{row['ResourceID']}", use_container_width=True, help="Add a review"):
                     st.session_state.selected_article = row['ResourceID']
