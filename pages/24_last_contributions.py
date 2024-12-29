@@ -39,7 +39,7 @@ try:
     query = f"""
             SELECT 
                     Users.Username, Contributions.ContributionType, FORMAT(Contributions.ContributionDate, 'DD MMM. YYYY - HH:MM') AS [DateOfContribution], 
-                    Resources.Title, Reviews.Rating AS ReviewRating, Reviews.Review AS Review
+                    Resources.Title, Resources.Authors, Resources.Date, Reviews.Rating AS ReviewRating, Reviews.Review AS Review
             FROM ((Users 
             INNER JOIN Contributions ON Users.UserLogin = Contributions.UserLogin) 
             INNER JOIN Resources ON Contributions.ResourceID = Resources.ResourceID)
@@ -71,10 +71,12 @@ for _, contribution in contributions.iterrows():
     if contribution["ContributionType"] == "New Resource":
         st.markdown(f"""
         <div style="background-color: white; padding: 10px; border: 1px solid lightgray; border-radius: 5px;">
-            <p style="margin: 0;">
+            <p style="margin: 5px;">
                 &#127381;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <strong>{contribution['DateOfContribution']}</strong> {contribution['Username']} added a new resource : <i>{contribution['Title']}</i>
+                <strong>{contribution['DateOfContribution']}</strong> {contribution['Username']} added a new resource
             </p>
+            <h5 style="text-align: center; margin: 0;">{contribution['Title']}</h5>
+            <p style="text-align: center; margin: 0px;"><i>By {contribution['Authors']} ({contribution['Date']})</p>
         </div>
         <p style="margin: 0;">&nbsp;</p>
         """, unsafe_allow_html=True)
@@ -82,10 +84,12 @@ for _, contribution in contributions.iterrows():
     elif contribution["ContributionType"] == "Modified Resource":
         st.markdown(f"""
         <div style="background-color: white; padding: 10px; border: 1px solid lightgray; border-radius: 5px;">
-            <p style="margin: 0;">
+            <p style="margin: 5px;">
                 &#128221;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <strong>{contribution['DateOfContribution']}</strong> {contribution['Username']} edited details of : <i>{contribution['Title']}</i>
+                <strong>{contribution['DateOfContribution']}</strong> {contribution['Username']} edited details of
             </p>
+            <h5 style="text-align: center; margin: 0;">{contribution['Title']}</h5>
+            <p style="text-align: center; margin: 0;"><i>By {contribution['Authors']} ({contribution['Date']})</p>
         </div>
         <p style="margin: 0;">&nbsp;</p>
         """, unsafe_allow_html=True)
@@ -93,10 +97,12 @@ for _, contribution in contributions.iterrows():
     elif contribution["ContributionType"] == "Review":
         st.markdown(f"""
         <div style="background-color: white; padding: 10px; border: 1px solid lightgray; border-radius: 5px;">
-            <p style="margin: 0;">
+            <p style="margin: 5px;">
                 &#128161;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <strong>{contribution['DateOfContribution']}</strong> {contribution['Username']} added or edited a review for <i>{contribution['Title']}</i>
+                <strong>{contribution['DateOfContribution']}</strong> {contribution['Username']} added or edited a review for
             </p>
+            <h5 style="text-align: center; margin: 0;">{contribution['Title']}</h5>
+            <p style="text-align: center; margin: 0px;"><i>By {contribution['Authors']} ({contribution['Date']})</p>
             <p style="margin: 0; text-align: center;">{print_stars(contribution['ReviewRating'])}</p>
             <p style="margin: 0;">&laquo; {contribution['Review']} &raquo;</p>
         </div>
