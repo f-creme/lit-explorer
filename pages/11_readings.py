@@ -5,7 +5,7 @@ import numpy as np
 
 from forms.detailed_view import show_resources_details
 from forms.add_review import add_review
-from forms.edit_resource import edit_resource
+from forms.personal_notes import edit_notes
 from forms.reading_list import modify_reading_list
 
 dict_status = {"Not Started": 1, "In Progress": 2, "Read": 3}
@@ -90,21 +90,22 @@ try:
             if st.button(":mag_right:", key=f"view_{elem['ResourceID']}", help="View the details of this resource."):
                 st.session_state.selected_article = elem['ResourceID']
                 show_resources_details(st.session_state.selected_article)
-            if st.button(":lower_left_fountain_pen:", key=f"edit_{elem['ResourceID']}", help="Edit the details of this resource."):
+            if st.button(":spiral_note_pad:", key=f"edit_{elem['ResourceID']}", help="Edit your personal notes."):
                 st.session_state.selected_article = elem['ResourceID']
-                edit_resource(st.session_state.selected_article)
+                edit_notes(st.session_state.selected_article)
 
         with col4:
             if st.button(":thought_balloon:", key=f"review_{elem['ResourceID']}", help="Add a review to this resource."):
                 st.session_state.selected_article = elem['ResourceID']
                 add_review(elem['ResourceID'], st.session_state.userLogin)
-            if st.button(":writing_hand:", key=f"edit_status_{elem['ResourceID']}", help="Edit the status and priority of this resource."):
+            if st.button(":pushpin:", key=f"edit_status_{elem['ResourceID']}", help="Edit the status and priority of this resource."):
                 st.session_state.selected_article = elem['ResourceID']
                 st.session_state.selected_status = elem['Status']
                 st.session_state.selected_priority = elem['Priority']
                 modify_reading_list(st.session_state.selected_article, st.session_state.selected_priority, st.session_state.selected_status)
 
         st.write("---")
+
 except Exception as e:
     st.error(f":x: An error as occured :\n{e}")
     st.stop()
