@@ -6,8 +6,8 @@ from datetime import datetime
 @st.dialog("Mark as Read", width="large")
 def mark_as_read(resource_id, resource_title):
 
-    dict_status = {"Not Started": 1, "In Progress": 2, "Read": 0}
-    dict_priority = {"Low": 3, "Medium": 2, "High": 1}
+    dict_status = {"Not Started": 1, "In Progress": 2, "Read": 3}
+    dict_priority = {"Low": 1, "Medium": 2, "High": 3}
 
     with st.form("mark_as_read"):
         try:
