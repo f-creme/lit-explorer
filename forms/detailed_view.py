@@ -4,6 +4,8 @@ import pyodbc
 import numpy as np
 from datetime import datetime
 
+from forms.edit_resource import edit_resource
+
 def print_stars(rating):
     if rating == None:
         return "✰✰✰✰✰"
@@ -88,7 +90,7 @@ def show_resources_details(resourceID):
                     """, unsafe_allow_html=True)
 
             st.write("")
-            st.form_submit_button("Close", use_container_width=True, type="primary", on_click=st.stop, help="Click on the cross at top right if the window does not close.")
+            close_button = st.form_submit_button("Close", use_container_width=True, type="primary", on_click=st.stop, help="Click on the cross at top right if the window does not close.")
 
         except Exception as e:
             st.error(f"Unable to connect to the database: {e}")
