@@ -67,10 +67,10 @@ if submit:
         query = f"SELECT ResourceID FROM Resources WHERE Title = '{title}' AND [Date] = {date}"
         resource_id = cursor.execute(query).fetchone()[0]
 
-        dict_status = {"Not Started": 1, "In Progress": 2, "Read": 0}
-        dict_priority = {"Low": 3, "Medium": 2, "High": 1}
+        dict_status = {"Not Started": 1, "In Progress": 2, "Read": 3}
+        dict_priority = {"Low": 1, "Medium": 2, "High": 3}
 
-        if dict_status[status] == 0:
+        if dict_status[status] == dict_status["Read"]:
             query = "INSERT INTO ReadingList (ResourceID, UserID, Status, Priority, DateAdded, DateRead) VALUES (?, ?, ?, ?, ?, ?)"
             params = (resource_id, st.session_state.userID, dict_status[status], 0, datetime.now(), datetime.now())
 
