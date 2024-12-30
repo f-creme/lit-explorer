@@ -1,3 +1,20 @@
+"""
+LitExplorer: Interactive Database for Scientific Literature
+
+Home page of LitExplorer, a Streamlit application designed for efficient exploration, organization, 
+and interaction with a database focused on nitrosamines. This platform was developed collaboratively 
+by ECPM Strasbourg students and Novartis to address a critical need in the pharmaceutical industry.
+
+Features showcased on this page:
+- Welcome message introducing the application and its purpose.
+- Overview of how to set up and navigate the app.
+- Resources for tutorials and contact information for support.
+- Highlights of recent updates, including:
+  * User collaboration tools: ratings, comments, and reviews.
+  * Advanced search and resource filtering.
+  * Dynamic database synchronization.
+"""
+
 import streamlit as st
 import toml 
 
@@ -12,14 +29,14 @@ st.title("Welcome to **LitExplorer** :wave:")
 
 st.markdown(
     """
-    **LitExplorer** is your go-to application for exploring, organizing, and incteracting 
-    with scientific literature on nitrosamines. Designed with researchers, industry professionals 
-    and students in mind, this platfrom fosters collaboration and simplifies access 
-    to information on nitrosamines.
-
-    Throuhg intuitives features like advanced searches, user reviews, and resource 
-    management, **LitExplorer** empowers you to stay up-to-date with the latest 
-    insights on nitrosamines.
+    **LitExplorer** is your go-to application for exploring, organizing, and interacting 
+    with scientific literature on nitrosamines. Designed with researchers, industry professionals, 
+    and students in mind, this platform fosters collaboration and simplifies access 
+    to critical information.
+    
+    Through features like advanced searches, user reviews, dynamic synchronization, 
+    and resource management, **LitExplorer** empowers you to stay updated and contribute 
+    to the knowledge base on nitrosamines.
     """
 )
 
@@ -27,13 +44,13 @@ st.markdown("---")
 
 st.markdown(
     """
-    ### How to get started :rocket:
+    ### How to Get Started :rocket:
 
-    1. **Install the application**: Follow the instructions in our Installation Guide.
-    2. **Configure the database**: Head over to the **Database Configuration** page to link your local 
+    1. **Install the Application**: Follow the steps in the [Installation Guide](https://github.com/f-creme/lit-explorer/blob/main/readme.md).
+    2. **Configure the Database**: Use the **Database Configuration** page to link your local 
     or cloud-hosted Access file.
-    3. **Dive into your library**: Explore the database, interact with resources, and contribute 
-    to the knowledge base.
+    3. **Collaborate**: Add reviews, interact with resources, and contribute to building 
+    a dynamic knowledge hub.
     """
 )
 
@@ -44,9 +61,13 @@ st.markdown(
     ### About LitExplorer :books:
 
     LitExplorer was developed by students from **ECPM Strasbourg** in collaboration with **Novartis**, 
-    adressing a critical challenge in the pharmaceutical industry. This tool supports 
-    dynamic literature review processes, emphasizing both ease of access and 
-    community-driven insights.
+    addressing a critical challenge in the pharmaceutical industry. This tool supports 
+    a dynamic literature review process, emphasizing ease of access and user-driven insights.
+
+    **Recent Updates**:
+    - Enhanced user profile management.
+    - Improved review and comment system.
+    - Advanced filtering and sorting options.
     """
 )    
 
@@ -56,10 +77,11 @@ st.markdown(
     """
     ### Tutorials :movie_camera:
     
-    Below, you'll find video tutorials to guide you through essentiel steps:
-    * Installing LitExplorer
-    * Configuring the database
-    * Your First Use
+    Below, you'll find video tutorials to guide you through essential steps:
+    - Installing LitExplorer
+    - Configuring the database
+    - Advanced search features
+    - Collaborative resource management
 
     *(Tutorial videos coming soon)*
     """
@@ -71,10 +93,11 @@ st.markdown(
     """
     ### Contact Us :mailbox:
     
-    Have questions, suggestions, or feedback? Feel free to reach out!
+    Have questions, suggestions, or feedback? Reach out to us!
     
-    * **Team Project** : Axel Delente, Sara Sanchez, Florentin Creme supervised by **[ECPM Strasbourg](https://ecpm.unistra.fr)** and **Novartis**
-    * **Developer** : Florentin Creme
-        * **Email**: creme.florentin@gmail.com
-        * **GitHub**: [f-creme](https://github.com/f-creme)"""
+    - **Team Project**: Axel Delente, Sara Sanchez, Florentin Creme
+    - **Developer**: Florentin Creme
+        - **Email**: creme.florentin@gmail.com
+        - **GitHub**: [f-creme](https://github.com/f-creme)
+    """
 )
