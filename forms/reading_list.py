@@ -11,8 +11,8 @@ def add_to_reading_list(resource_id):
         st.title("Add to Reading List")
         st.write("Add this resource to your reading list.")
 
-        dict_status = {"Not Started": 1, "In Progress": 2, "Read": 0}
-        dict_priority = {"Low": 3, "Medium": 2, "High": 1}
+        dict_status = {"Not Started": 1, "In Progress": 2, "Read": 3}
+        dict_priority = {"Low": 1, "Medium": 2, "High": 3}
 
         try:
             # Connection string for Access database
@@ -26,7 +26,7 @@ def add_to_reading_list(resource_id):
 
             if rl.empty:
                 
-                status = st.segmented_control("Select a status", ["Not Started", "In Progress", "Read"])
+                status = st.segmented_control("Select a status", ["Not Started", "In Progress"])
                 priority = st.select_slider("Select a priority", options=["Low", "Medium", "High"])
 
                 if st.form_submit_button("Add to Reading List", use_container_width=True, type="primary"):
@@ -46,7 +46,7 @@ def add_to_reading_list(resource_id):
                 st.info(f"Status is currently set to {next(key for key, value in dict_status.items() if value == rl['Status'][0])}.")
                 st.info(f"Priority is currently set to {next(key for key, value in dict_priority.items() if value == rl['Priority'][0])}.")
 
-                status = st.segmented_control("Select a status", ["Not Started", "In Progress", "Read"])
+                status = st.segmented_control("Select a status", ["Not Started", "In Progress"])
                 priority = st.select_slider("Select a priority", options=["Low", "Medium", "High"])
 
                 if st.form_submit_button("Update Reading List", use_container_width=True, type="primary"):
