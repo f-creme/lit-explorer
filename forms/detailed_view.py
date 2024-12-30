@@ -42,7 +42,7 @@ def show_resources_details(resourceID):
             # Load Readers
             readers_query = f"""SELECT Username 
                                 FROM Users LEFT JOIN ReadingList ON Users.UserID = ReadingList.UserID 
-                                WHERE ResourceID = {resourceID} AND Status = 0;"""
+                                WHERE ResourceID = {resourceID} AND Status = 3;"""
             readers = pd.read_sql(readers_query, conn)
             
             conn.close()
