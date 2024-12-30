@@ -135,7 +135,7 @@ if st.session_state.dbPathway:
                     st.session_state.selected_article_title = row['Title']
                     mark_as_read(row['ResourceID'], row['Title'])
             with col5:
-                if st.button(f":spiral_note_pad: To list", key=f"reading_list_{row['ResourceID']}", use_container_width=True, help="Add to your reading list"):
+                if st.button(f":pushpin: To list", key=f"reading_list_{row['ResourceID']}", use_container_width=True, help="Add to your reading list"):
                     st.session_state.selected_article = row['ResourceID']
                     st.session_state.selected_article_title = row['Title']
                     add_to_reading_list(row['ResourceID'])
