@@ -63,3 +63,41 @@ def add_to_reading_list(resource_id):
             st.error(f"Error: {e}")
 
         st.form_submit_button(" ", type="tertiary")
+
+@st.dialog("Modify Reading List", width="large")
+def modify_reading_list(resourceID, resourcePriority, resourceStatus):
+    with st.form("modify_reading_list"):
+        dict_status = {"Not Started": 1, "In Progress": 2, "Read": 3}
+        dict_priority = {"Low": 1, "Medium": 2, "High": 3}
+
+        st.title("Modify Reading List")
+        st.write("Update the status and priority of this resource.")
+
+        if resourceStatus == dict_status["Read"]:
+            st.info("This resource is already marked as read.")
+
+        status = st.segmented_control("Select a status", ["Not Started", "In Progress", "Read"])
+        priority = st.select_slider("Select a priority", options=["Low", "Medium", "High"])
+
+        if st.form_submit_button("Update Reading List", use_container_width=True, type="primary"):
+            if status == "Read":
+                query = f"UPDATE ReadingList SET Status = ?, Priority = ?, DateRead = ? WHERE ResourceID = {resourceID} AND UserID = {st.session_state.userID};"
+                params = (dict_status[status], 0, datetime.now())
+            else:
+                query = f"UPDATE ReadingList SET Status = ?, Priority = ?, DateAdded = ?, DateRead = ? WHERE ResourceID = {resourceID} AND UserID = {st.session_state.userID};"
+                params = (dict_status[status], dict_priority[priority], datetime.now(), None)
+            
+            try:
+                conn = pyodbc.connect(
+                    f"DRIVER={{Microsoft Access Driver (*.mdb, *.accdb)}};DBQ={st.session_state.dbPathway};"
+                )
+                cursor = conn.cursor()
+                cursor.execute(query, params)
+                conn.commit()
+                conn.close()
+            except Exception as e:
+                st.error(f"An error as occured : \n{e}")
+                
+            st.success("Resource updated in your reading list.")
+
+        st.form_submit_button(" ", type="tertiary")
