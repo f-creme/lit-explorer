@@ -21,8 +21,8 @@ if "dbPathway" in st.session_state:
         # Query to join Reviews and Resources and get the 10 most recent reviews
         query = f"""
         SELECT TOP {num_interactions} 
-            FORMAT(Reviews.ReviewDate, 'YYYY-MM-DD') AS [Date], Reviews.Review, Reviews.Rating, Users.Username, Resources.Title, Resources.Authors 
-            FROM (Reviews INNER JOIN Users ON Reviews.UserLogin = Users.UserLogin) 
+            Reviews.ReviewDate, Reviews.Review, Reviews.Rating, Users.Username, Resources.Title, Resources.Authors 
+            FROM (Reviews INNER JOIN Users ON Reviews.UserID = Users.UserID) 
             INNER JOIN Resources ON Reviews.ResourceID = Resources.ResourceID  
             ORDER BY ReviewDate DESC;
         """
@@ -35,10 +35,10 @@ if "dbPathway" in st.session_state:
         # Display the results in a table
         for index, row in recent_reviews.iterrows():
 
-            if isinstance(row['Date'], pd.Timestamp):
-                formatted_date = row['Date'].strftime("%d %b. %Y")
+            if isinstance(row['ReviewDate'], pd.Timestamp):
+                formatted_date = row['ReviewDate'].strftime("%d %b. %Y")
             else:
-                formatted_date = datetime.strptime(row['Date'], "%Y-%m-%d").strftime("%d %b. %Y")
+                formatted_date = datetime.strptime(row['ReviewDate'], "%Y-%m-%d").strftime("%d %b. %Y")
 
             st.markdown(f"""
             <div style="background-color: white; padding: 10px; border: 1px solid lightgray; border-radius: 5px;">
