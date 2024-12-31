@@ -30,7 +30,7 @@ def modify_profile_dialog():
                 conn = pyodbc.connect(
                     f"DRIVER={{Microsoft Access Driver (*.mdb, *.accdb)}};DBQ={st.session_state.dbPathway};"
                 )
-                query = f"UPDATE Users SET UserDesc='{user_desc}', UserRole='{user_role}', UserMail='{user_mail}', UserPicURL='{user_pic}' WHERE UserLogin='{st.session_state.userLogin}';"
+                query = f"UPDATE Users SET UserDesc='{user_desc}', UserRole='{user_role}', UserMail='{user_mail}', UserPicURL='{user_pic}' WHERE UserID={st.session_state.userID};"
                 conn.execute(query)
                 conn.commit()
                 conn.close()

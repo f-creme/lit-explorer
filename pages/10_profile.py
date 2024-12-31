@@ -18,7 +18,7 @@ try:
     conn = pyodbc.connect(
         f"DRIVER={{Microsoft Access Driver (*.mdb, *.accdb)}};DBQ={st.session_state.dbPathway};"
     )
-    query = f"SELECT * FROM Users WHERE UserLogin='{st.session_state.userLogin}';"
+    query = f"SELECT * FROM Users WHERE UserID={st.session_state.userID};"
     user_data = pd.read_sql(query, conn)
     conn.close()
 except Exception as e:
