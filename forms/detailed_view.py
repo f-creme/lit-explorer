@@ -35,7 +35,7 @@ def show_resources_details(resourceID):
                                     [Reviews].[Review], 
                                     [Users].[Username]
                                 FROM [Reviews]
-                                INNER JOIN [Users] ON [Reviews].[UserLogin] = [Users].[UserLogin] 
+                                INNER JOIN [Users] ON [Reviews].[UserID] = [Users].[UserID] 
                                 WHERE [Reviews].[ResourceID] = {resourceID} 
                                 ORDER BY [Reviews].[ReviewDate] DESC;
                             """

@@ -15,35 +15,30 @@ def edit_global_rating(resourceID):
         query = f"SELECT Rating FROM Reviews WHERE ResourceID = {resourceID};"
         individual_rating = pd.read_sql(query, conn)
 
+        # Calculate the global rating
         if individual_rating.empty:
             global_rating = None
         else:
             global_rating = individual_rating['Rating'].mean()
 
         # Update the Resources table using parameters
-        update_query = """
-        UPDATE Resources
-        SET [Rating] = ?
-        WHERE ResourceID = ?;
-        """
-        params = (
-            global_rating, resourceID
-        )
+        update_query = "UPDATE Resources SET [Rating] = ? WHERE ResourceID = ?;"
+        params = (global_rating, resourceID)
         cursor.execute(update_query, params)
         conn.commit()
 
     except Exception as e:
         st.error(f"An error as occured when updating the rating: {e}")
 
-def add_contribution(resourceID, userLogin, contributionType, conn):
+def add_contribution(resourceID, userID, contributionType, conn):
     cursor = conn.cursor()
     try:
-        query = "INSERT INTO Contributions (ResourceID, UserLogin, ContributionType, ContributionDate) VALUES (?, ?, ?, ?);"
-        params = (resourceID, userLogin, contributionType, datetime.now())
+        query = "INSERT INTO Contributions (ResourceID, UserID, ContributionType, ContributionDate) VALUES (?, ?, ?, ?);"
+        params = (resourceID, userID, contributionType, datetime.now())
         cursor.execute(query, params)
         conn.commit()
 
-        query = f"SELECT TOP 1 ContributionID FROM Contributions WHERE ResourceID = {resourceID} AND UserLogin = '{userLogin}' AND ContributionType = '{contributionType}' ORDER BY ContributionDate DESC;"
+        query = f"SELECT TOP 1 ContributionID FROM Contributions WHERE ResourceID = {resourceID} AND UserID = {userID} AND ContributionType = '{contributionType}' ORDER BY ContributionDate DESC;"
         contributionID = cursor.execute(query).fetchone()[0]
 
     except Exception as e:
@@ -51,48 +46,52 @@ def add_contribution(resourceID, userLogin, contributionType, conn):
     
     return contributionID
 
-@st.dialog("Add a Review", width="large")
-def add_review(resourceID, user):
+@st.dialog("Add a Review", width="small")
+def add_review(resourceID, userID):
     with st.form("Add a Review"):
         try:
             # Connection string for Access database
-            conn = pyodbc.connect(
-                f"DRIVER={{Microsoft Access Driver (*.mdb, *.accdb)}};DBQ={st.session_state.dbPathway};"
-            )
+            conn = pyodbc.connect(f"DRIVER={{Microsoft Access Driver (*.mdb, *.accdb)}};DBQ={st.session_state.dbPathway};")
             cursor = conn.cursor()
 
             # Load the Resources table
             error_message = "An error as occured when loading the data."
-            review_query = f"SELECT * FROM Reviews WHERE ResourceID = {resourceID} AND UserLogin = '{user}';"
-            user_query = f"SELECT Username FROM Users WHERE UserLogin = '{user}';"
-            comment = pd.read_sql(review_query, conn)
-            username = pd.read_sql(user_query, conn)['Username'].values[0]
 
-            if comment.empty:
-                # Edit form
-                date = st.date_input("Date")
+            query = f"SELECT Reviews.*, Users.Username FROM Reviews LEFT JOIN Users ON Reviews.UserID = Users.UserID WHERE ResourceID = {resourceID};"
+            old_review = pd.read_sql(query, conn)
+
+            if old_review.empty:
+
+                # Form template
                 rating = st.slider("Rating", min_value=0, max_value=5, value=0)
-                review = st.text_area("Review")
-                username = st.text_input("User", value=username)
-                submit = st.form_submit_button("Save Review")
+                review = st.text_area("Review",help=(
+                                            "You can use Markdown to format your notes. "
+                                            "[Click here to learn more about Markdown](https://www.markdownguide.org/cheat-sheet/).\n\n"
+                                            "**Examples of Markdown formatting:**\n"
+                                            "- *Italic text*: `*italic*`\n"
+                                            "- **Bold text**: `**bold**`\n"
+                                            "- [Link](https://example.com): `[Link](https://example.com)`"),)
+                username = st.text_input("User", value=st.session_state.userName)
+
+                submit = st.form_submit_button("Save Review", use_container_width=True, type="primary")
+
                 if submit:
                     # Add the contribution to the Contributions table
-                    contributionID = add_contribution(resourceID, user, "Add Review", conn)
+                    contributionID = add_contribution(resourceID, userID, "Add Review", conn)
                     
                     # Update the Reviews table using parameters
                     update_query = """
-                    INSERT INTO Reviews (ResourceID, Rating, Review, UserLogin, ReviewDate, ContributionID)
+                    INSERT INTO Reviews (ResourceID, Rating, Review, UserID, ReviewDate, ContributionID)
                     VALUES (?, ?, ?, ?, ?, ?);
                     """
-                    params = (
-                        resourceID, int(rating), review, user, date, contributionID
-                    )
+                    params = (resourceID, int(rating), review, userID, datetime.now(), contributionID)
+
                     error_message = "An error as occured when saving the review."
                     cursor.execute(update_query, params)
                     conn.commit()
 
                     # Update the number of contributions in the Users table
-                    query = f"UPDATE Users SET UserContributions = UserContributions + 1 WHERE UserLogin = '{st.session_state.userLogin}'"
+                    query = f"UPDATE Users SET UserContributions = UserContributions + 1 WHERE UserID = {userID}"
                     cursor.execute(query)
                     conn.commit()
 
@@ -103,35 +102,26 @@ def add_review(resourceID, user):
             else:
                 st.info("You have already reviewed this resource.\n\nBy submitting this form, you will update your review.")
                 
-                reviewID = int(comment.loc[0, 'ReviewID'])  
-                date = st.date_input("Date", value=comment.loc[0, 'ReviewDate'])
-                rating = st.slider("Rating", min_value=0, max_value=5, value=comment.loc[0, 'Rating'])
-                review = st.text_area("Review", value=comment.loc[0, 'Review'])
-                username = st.text_input("User", value=username)
+                old_review = old_review.iloc[0]
+ 
+                rating = st.slider("Rating", min_value=0, max_value=5, value=old_review['Rating'])
+                review = st.text_area("Review", value=old_review['Review'])
+                username = st.text_input("User", value=st.session_state.userName)
 
-                submit = st.form_submit_button("Update Review")
+                submit = st.form_submit_button("Update Review", use_container_width=True, type="primary", help="By submitting this form, you will update your review.")
+
                 if submit:
                     # Delete the previous contribution about this resource
-                    query = f"DELETE FROM Contributions WHERE ContributionID IN (SELECT ContributionID FROM Contributions WHERE UserLogin = '{user}' AND ResourceID = {resourceID} AND ContributionType LIKE '%Review%');"
+                    query = f"DELETE FROM Contributions WHERE ContributionID IN (SELECT ContributionID FROM Contributions WHERE UserID = {userID} AND ResourceID = {resourceID} AND ContributionType LIKE '%Review%');"
                     cursor.execute(query)
                     conn.commit()
 
                     # Add the contribution to the Contributions table
-                    contributionID = add_contribution(resourceID, user, "Edit Review", conn)
+                    contributionID = add_contribution(resourceID, userID, "Edit Review", conn)
 
                     # Update the Reviews table using parameters
-                    update_query = f"""
-                    UPDATE Reviews
-                    SET [ReviewDate] = ?,
-                        [Rating] = ?,
-                        [Review] = ?,
-                        [UserLogin] = ?, 
-                        [ContributionID] = ? 
-                    WHERE ReviewID = ?;
-                    """
-                    params = (
-                        date, int(rating), review, user, contributionID, reviewID
-                    )
+                    update_query = f"UPDATE Reviews SET [ReviewDate] = ?, [Rating] = ?, [Review] = ?, [UserID] = ?, [ContributionID] = ? WHERE ReviewID = ?;"
+                    params = (datetime.now(), int(rating), review, userID, contributionID, int(old_review['ReviewID']))
                     error_message = "An error as occured when updating the review."
                     
                     cursor.execute(update_query, params)
@@ -148,4 +138,4 @@ def add_review(resourceID, user):
         finally:
             conn.close()
 
-        st.form_submit_button("Close")
+        st.form_submit_button(" ", type="tertiary")

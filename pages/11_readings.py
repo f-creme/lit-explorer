@@ -106,7 +106,7 @@ try:
         with col5:
             if st.button("💭", key=f"review_{resource_id}", help="Add a review to this resource."):
                 st.session_state.selected_article = resource_id
-                add_review(resource_id, st.session_state.userLogin)
+                add_review(resource_id, st.session_state.userID)
             if st.button("🗂️", key=f"edit_status_{resource_id}", help="Edit the status and priority of this resource."):
                 st.session_state.selected_article = resource_id
                 st.session_state.selected_status = status
