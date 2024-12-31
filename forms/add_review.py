@@ -57,7 +57,7 @@ def add_review(resourceID, userID):
             # Load the Resources table
             error_message = "An error as occured when loading the data."
 
-            query = f"SELECT Reviews.*, Users.Username FROM Reviews LEFT JOIN Users ON Reviews.UserID = Users.UserID WHERE ResourceID = {resourceID};"
+            query = f"SELECT Reviews.*, Users.Username FROM Reviews LEFT JOIN Users ON Reviews.UserID = Users.UserID WHERE ResourceID = {resourceID} AND Reviews.UserID = {userID};"
             old_review = pd.read_sql(query, conn)
 
             if old_review.empty:
