@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 import pyodbc
+from datetime import datetime
 
 # Function to print stars
 def print_stars(rating):
@@ -38,10 +39,10 @@ try:
     )
     query = f"""
             SELECT 
-                    Users.Username, Contributions.ContributionType, FORMAT(Contributions.ContributionDate, 'DD MMM. YYYY - HH:MM') AS [DateOfContribution], 
+                    Users.Username, Contributions.ContributionType, Contributions.ContributionDate AS [DateOfContribution], 
                     Resources.Title, Resources.Authors, Resources.Date, Reviews.Rating AS ReviewRating, Reviews.Review AS Review
             FROM ((Users 
-            INNER JOIN Contributions ON Users.UserLogin = Contributions.UserLogin) 
+            INNER JOIN Contributions ON Users.UserID = Contributions.UserID) 
             INNER JOIN Resources ON Contributions.ResourceID = Resources.ResourceID)
             LEFT JOIN Reviews ON Contributions.ContributionID = Reviews.ContributionID  
             ORDER BY Contributions.ContributionDate DESC;
@@ -73,7 +74,7 @@ for _, contribution in contributions.iterrows():
         <div style="background-color: white; padding: 10px; border: 1px solid lightgray; border-radius: 5px;">
             <p style="margin: 5px;">
                 &#127381;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <strong>{contribution['DateOfContribution']}</strong> {contribution['Username']} added a new resource
+                <strong>{contribution['DateOfContribution'].strftime('%d %b %Y')}</strong> &#183; {contribution['Username']} added a new resource
             </p>
             <h5 style="text-align: center; margin: 0;">{contribution['Title']}</h5>
             <p style="text-align: center; margin: 0px;"><i>By {contribution['Authors']} ({contribution['Date']})</p>
@@ -86,7 +87,7 @@ for _, contribution in contributions.iterrows():
         <div style="background-color: white; padding: 10px; border: 1px solid lightgray; border-radius: 5px;">
             <p style="margin: 5px;">
                 &#128221;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <strong>{contribution['DateOfContribution']}</strong> {contribution['Username']} edited details of
+                <strong>{contribution['DateOfContribution'].strftime('%d %b %Y')}</strong> &#183; {contribution['Username']} edited details of
             </p>
             <h5 style="text-align: center; margin: 0;">{contribution['Title']}</h5>
             <p style="text-align: center; margin: 0;"><i>By {contribution['Authors']} ({contribution['Date']})</p>
@@ -99,7 +100,7 @@ for _, contribution in contributions.iterrows():
         <div style="background-color: white; padding: 10px; border: 1px solid lightgray; border-radius: 5px;">
             <p style="margin: 5px;">
                 &#128161;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <strong>{contribution['DateOfContribution']}</strong> {contribution['Username']} added or edited a review for
+                <strong>{contribution['DateOfContribution'].strftime('%d %b %Y')}</strong> &#183; {contribution['Username']} added or edited a review for
             </p>
             <h5 style="text-align: center; margin: 0;">{contribution['Title']}</h5>
             <p style="text-align: center; margin: 0px;"><i>By {contribution['Authors']} ({contribution['Date']})</p>
