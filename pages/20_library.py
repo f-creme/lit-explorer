@@ -18,6 +18,30 @@ def print_stars(rating):
 def split_and_flatten(column):
     return set(value.strip() for sublist in column.dropna().str.split(',') for value in sublist)
 
+def render_action_buttons(resource_id, title):
+        col1, col2, col3, col4, col5 = st.columns(5, vertical_alignment="center")
+        with col1:
+            if st.button(f":mag_right: View", key=f"details_{resource_id}", use_container_width=True, type="primary", help="View detailed information about this article"):
+                st.session_state.selected_article = resource_id
+                show_resources_details(resource_id)
+        with col2:
+            if st.button(f":heavy_check_mark: Read", key=f"reading_{resource_id}", use_container_width=True, help="Quickly mark as read"):
+                st.session_state.selected_article = resource_id
+                st.session_state.selected_article_title = title
+                mark_as_read(resource_id, title)
+        with col3:
+            if st.button(f":pushpin: To list", key=f"reading_list_{resource_id}", use_container_width=True, help="Add to your reading list"):
+                st.session_state.selected_article = resource_id
+                add_to_reading_list(resource_id)
+        with col4:
+            if st.button(f":thought_balloon: Review", key=f"review_{resource_id}", use_container_width=True, help="Add a review"):
+                st.session_state.selected_article = resource_id
+                add_review(resource_id, st.session_state.userID)
+        with col5:
+            if st.button(f":lower_left_ballpoint_pen: Edit", key=f"edit_{resource_id}", use_container_width=True, help="Edit this article"):
+                st.session_state.selected_article = resource_id
+                edit_resource(resource_id)
+
 # Sort options
 st.sidebar.header("Sort")
 sort_by = st.sidebar.selectbox("Sort by", options=["Title", "Rating", "Date"], index=0)
@@ -124,30 +148,7 @@ if st.session_state.dbPathway:
             st.write(f"**Keywords:** {row['Keywords']}")
 
             # Button to open article details
-            col3, col4, col5, col6, col7 = st.columns(5, vertical_alignment="center")
-            with col3:
-                if st.button(f":mag_right: View", key=f"details_{row['ResourceID']}", use_container_width=True, type="primary", help="View detailed information about this article"):
-                    st.session_state.selected_article = row['ResourceID']
-                    show_resources_details(row['ResourceID'])
-            with col4:
-                if st.button(f":heavy_check_mark: Read", key=f"reading_{row['ResourceID']}", use_container_width=True, help="Quickly mark as read"):
-                    st.session_state.selected_article = row['ResourceID']
-                    st.session_state.selected_article_title = row['Title']
-                    mark_as_read(row['ResourceID'], row['Title'])
-            with col5:
-                if st.button(f":pushpin: To list", key=f"reading_list_{row['ResourceID']}", use_container_width=True, help="Add to your reading list"):
-                    st.session_state.selected_article = row['ResourceID']
-                    st.session_state.selected_article_title = row['Title']
-                    add_to_reading_list(row['ResourceID'])
-            with col6:
-                if st.button(f":thought_balloon: Review", key=f"review_{row['ResourceID']}", use_container_width=True, help="Add a review"):
-                    st.session_state.selected_article = row['ResourceID']
-                    add_review(row['ResourceID'], st.session_state.userID)
-            with col7:
-                if st.button(f":lower_left_ballpoint_pen: Edit", key=f"edit_{row['ResourceID']}", use_container_width=True, help="Edit this article"):
-                    st.session_state.selected_article = row['ResourceID']
-                    edit_resource(row['ResourceID'])
-
+            render_action_buttons(row['ResourceID'], row['Title'])
 
             st.markdown("---")
 
