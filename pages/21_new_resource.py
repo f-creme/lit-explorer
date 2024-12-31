@@ -82,14 +82,14 @@ if submit:
         conn.commit()
 
         # Update the number of contributions in the Users table
-        query = f"UPDATE Users SET UserContributions = UserContributions + 1 WHERE UserLogin = '{st.session_state.userLogin}'"
+        query = f"UPDATE Users SET UserContributions = UserContributions + 1 WHERE UserID = {st.session_state.userID}"
         cursor.execute(query)
         conn.commit()
 
         try:
             # Insert into list of contributions
-            query = "INSERT INTO Contributions (ResourceID, ContributionType, UserLogin, ContributionDate) VALUES (?, ?, ?, ?)"
-            params = (resource_id, "New Resource", st.session_state.userLogin, datetime.now())
+            query = "INSERT INTO Contributions (ResourceID, ContributionType, UserID, ContributionDate) VALUES (?, ?, ?, ?)"
+            params = (resource_id, "New Resource", st.session_state.userID, datetime.now())
             cursor.execute(query, params)
 
             conn.commit()
