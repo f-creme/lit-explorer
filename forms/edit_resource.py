@@ -64,8 +64,8 @@ def edit_resource(resource_id):
 
                 try:
                     # Add the contribution to the Contributions table
-                    query = "INSERT INTO Contributions (ResourceID, UserLogin, ContributionType, ContributionDate) VALUES (?, ?, ?, ?);"
-                    params = (resource_id, st.session_state.userLogin, "Edit Resource", datetime.now())
+                    query = "INSERT INTO Contributions (ResourceID, UserID, ContributionType, ContributionDate) VALUES (?, ?, ?, ?);"
+                    params = (resource_id, st.session_state.userID, "Edit Resource", datetime.now())
                     cursor.execute(query, params)
 
                     conn.commit()
@@ -73,7 +73,7 @@ def edit_resource(resource_id):
                     st.success(f"Resource '{title}' updated successfully.")
 
                     # Update the number of contributions in the Users table
-                    query = f"UPDATE Users SET UserContributions = UserContributions + 1 WHERE UserLogin = '{st.session_state.userLogin}'"
+                    query = f"UPDATE Users SET UserContributions = UserContributions + 1 WHERE UserID = '{st.session_state.userID}'"
                     cursor.execute(query)
                     conn.commit()
 

@@ -142,7 +142,7 @@ if st.session_state.dbPathway:
             with col6:
                 if st.button(f":thought_balloon: Review", key=f"review_{row['ResourceID']}", use_container_width=True, help="Add a review"):
                     st.session_state.selected_article = row['ResourceID']
-                    add_review(row['ResourceID'], st.session_state.userLogin)
+                    add_review(row['ResourceID'], st.session_state.userID)
             with col7:
                 if st.button(f":lower_left_ballpoint_pen: Edit", key=f"edit_{row['ResourceID']}", use_container_width=True, help="Edit this article"):
                     st.session_state.selected_article = row['ResourceID']
