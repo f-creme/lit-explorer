@@ -2,14 +2,66 @@ import streamlit as st
 import pyodbc
 from datetime import datetime
 import warnings
+import pandas as pd
 
 warnings.filterwarnings("ignore")
 
 def display_help_keywords(field, example):
+    """
+    Display help text for the keywords field.
+    
+    Args:
+        field (str): The field for which help text is displayed.
+        example (str): An example of the field.
+    
+    Returns:
+        str: The help text for the keywords field.
+    """
     help = (f"Enter the {field} of the resource.\n\n"
             f"For example: `{example}, etc.`\n\n"
             f"If the resource belongs to multiple {field}, separate them by «, » (comma + space)")
     return help
+
+def autocomplete(input_text, options):
+    """
+    Auto-complete function for text input fields.
+    
+    Args:
+        input_text (str): Text input by the user.
+        options (list): List of options for auto-completion.
+        
+    Returns:
+        str: The auto-completed text.
+    """
+    if not input_text:
+        return options
+    return [option for option in options if input_text.lower() in option.lower()]
+
+def print_suggestions(input_text, options):
+    """
+    Print suggestions for auto-completion.
+    
+    Args:
+        input_text (str): Text input by the user.
+        options (list): List of options for auto-completion.
+    
+    Returns:
+        None
+    """
+    with st.form("autocomplete_form"):
+        suggestions = autocomplete(input_text, options)
+        st.write("Suggestions:")
+        for suggestion in suggestions:
+            st.write(f"- {suggestion}")
+        st.form_submit_button("Close", use_container_width=True)
+
+# Connection string for Access database
+conn = pyodbc.connect(f"DRIVER={{Microsoft Access Driver (*.mdb, *.accdb)}};DBQ={st.session_state.dbPathway};")
+all_resources_query = "SELECT * FROM Resources"
+all_resources = pd.read_sql(all_resources_query, conn)
+
+# Creating lists for auto completion
+journal_list = all_resources['Journal'].dropna().unique()
 
 # Page title
 st.title("Add a new resource")
@@ -42,8 +94,15 @@ with col1:
                                   "Review", 
                                   "Other"], 
                                   help="Select the document type")
+    
+    # Journal or Publisher Field
     journal = st.text_input("Name of the Journal or Publisher", 
-                            help="Enter the name of the journal or publisher")
+                            help="Enter the name of the journal or publisher\n\n"
+                                 "Press 'Enter' to see suggestions")
+    if journal:
+        print_suggestions(journal, journal_list)
+
+
     doi = st.text_input("DOI", 
                         help="Enter the DOI of the resource, if available")
     article_type = st.selectbox("Article Type", 
@@ -120,8 +179,7 @@ if submit:
             st.sidebar.error("Title, Authors, Year of publication, and Reading status are mandatory fields.")
             st.stop()
 
-        # Connection string for Access database
-        conn = pyodbc.connect(f"DRIVER={{Microsoft Access Driver (*.mdb, *.accdb)}};DBQ={st.session_state.dbPathway};")
+        # Connect to the database
         cursor = conn.cursor()
 
         # Check for duplicate entries
