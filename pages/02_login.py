@@ -21,6 +21,9 @@ import streamlit as st
 import pandas as pd
 import pyodbc
 import toml
+import warnings
+
+warnings.filterwarnings("ignore")
 
 # Generate the login based on the user's name
 def generate_login(name, existing_users):

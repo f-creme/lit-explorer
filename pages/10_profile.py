@@ -3,6 +3,9 @@ import pandas as pd
 import pyodbc
 from datetime import datetime
 import numpy as np
+import warnings
+
+warnings.filterwarnings("ignore")
 
 from forms.modify_profile import modify_profile_dialog
 

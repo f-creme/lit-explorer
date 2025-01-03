@@ -3,6 +3,9 @@ import pandas as pd
 import numpy as np
 import pyodbc
 from datetime import datetime
+import warnings
+
+warnings.filterwarnings("ignore")
 
 # Function to print stars
 def print_stars(rating):

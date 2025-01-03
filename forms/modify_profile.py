@@ -1,7 +1,9 @@
 import streamlit as st
 import pandas as pd
 import pyodbc
+import warnings
 
+warnings.filterwarnings("ignore")
 
 @st.dialog("Modify Profile")
 def modify_profile_dialog():

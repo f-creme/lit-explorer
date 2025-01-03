@@ -2,6 +2,9 @@ import streamlit as st
 import pandas as pd
 import pyodbc
 from datetime import datetime
+import warnings
+
+warnings.filterwarnings("ignore")
 
 def edit_global_rating(resourceID):
     try:

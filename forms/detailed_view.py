@@ -3,6 +3,9 @@ import pandas as pd
 import pyodbc
 import numpy as np
 from datetime import datetime
+import warnings
+
+warnings.filterwarnings("ignore")
 
 from forms.edit_resource import edit_resource
 

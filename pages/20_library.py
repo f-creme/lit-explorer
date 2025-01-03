@@ -2,6 +2,9 @@ import streamlit as st
 import pandas as pd
 import pyodbc
 import numpy as np
+import warnings
+
+warnings.filterwarnings("ignore")
 
 from forms.detailed_view import show_resources_details
 from forms.mark_as_read import mark_as_read

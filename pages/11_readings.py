@@ -1,6 +1,9 @@
 import streamlit as st
 import pandas as pd
 import pyodbc
+import warnings
+
+warnings.filterwarnings("ignore")
 
 from forms.detailed_view import show_resources_details
 from forms.add_review import add_review

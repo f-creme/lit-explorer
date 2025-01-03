@@ -3,6 +3,9 @@ import pyodbc
 import pandas as pd
 from datetime import datetime
 import numpy as np
+import warnings
+
+warnings.filterwarnings("ignore")
 
 # Page title
 st.title("Contributors")

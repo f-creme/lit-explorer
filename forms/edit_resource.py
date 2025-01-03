@@ -2,6 +2,9 @@ import streamlit as st
 import pandas as pd
 import pyodbc
 from datetime import datetime
+import warnings
+
+warnings.filterwarnings("ignore")
 
 @st.dialog("Edit Resource", width="large")
 def edit_resource(resource_id):
@@ -73,7 +76,7 @@ def edit_resource(resource_id):
                     st.success(f"Resource '{title}' updated successfully.")
 
                     # Update the number of contributions in the Users table
-                    query = f"UPDATE Users SET UserContributions = UserContributions + 1 WHERE UserID = '{st.session_state.userID}'"
+                    query = f"UPDATE Users SET UserContributions = UserContributions + 1 WHERE UserID = {st.session_state.userID}   "
                     cursor.execute(query)
                     conn.commit()
 

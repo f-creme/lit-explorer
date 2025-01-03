@@ -20,6 +20,9 @@ import streamlit as st
 import pandas as pd
 import pyodbc
 import toml
+import warnings
+
+warnings.filterwarnings("ignore")
 
 # Load database configuration
 with open("config.toml", "r") as f:

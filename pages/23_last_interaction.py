@@ -1,8 +1,10 @@
 import streamlit as st
 import pandas as pd
 import pyodbc
-import math
 from datetime import datetime
+import warnings
+
+warnings.filterwarnings("ignore")
 
 st.title("Last Interactions")
 st.write("See here the last interactions with the resources of the database.")

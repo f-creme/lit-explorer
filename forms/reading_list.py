@@ -2,6 +2,9 @@ import streamlit as st
 import pyodbc
 import pandas as pd
 from datetime import datetime
+import warnings
+
+warnings.filterwarnings("ignore")
 
 @st.dialog("Add to Reading List", width="large")
 def add_to_reading_list(resource_id):

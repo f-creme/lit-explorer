@@ -1,5 +1,8 @@
 import streamlit as st
 import pyodbc
+import warnings
+
+warnings.filterwarnings("ignore")
 
 def validate_input(notes):
     """Validate the length of the user's input notes."""

@@ -17,6 +17,9 @@ Features showcased on this page:
 
 import streamlit as st
 import toml 
+import warnings
+
+warnings.filterwarnings("ignore")
 
 st.set_page_config(page_title="Home Page")
 

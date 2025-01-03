@@ -1,5 +1,8 @@
 import streamlit as st
 import toml
+import warnings
+
+warnings.filterwarnings("ignore")
 
 with open("config.toml", "r") as f:
     data = toml.load(f)

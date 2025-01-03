@@ -1,6 +1,9 @@
 import streamlit as st
 import pyodbc
 from datetime import datetime
+import warnings
+
+warnings.filterwarnings("ignore")
 
 # Page title
 st.title("Add a new resource")
