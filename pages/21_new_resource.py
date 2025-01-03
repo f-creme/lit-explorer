@@ -5,6 +5,12 @@ import warnings
 
 warnings.filterwarnings("ignore")
 
+def display_help_keywords(field, example):
+    help = (f"Enter the {field} of the resource.\n\n"
+            f"For example: `{example}, etc.`\n\n"
+            f"If the resource belongs to multiple {field}, separate them by «, » (comma + space)")
+    return help
+
 # Page title
 st.title("Add a new resource")
 st.header(f"📂 Library about  Nitrosamines :")
@@ -51,24 +57,26 @@ with col1:
 with col2:
     st.write("**Categorization:**")
     application_field = st.text_input("Application Field", 
-                                      help=("Enter the main domain of application of the resource.\n\n"
-                                            "For example: `Pharmaceuticals, Food Industry, etc.`\n\n"
-                                            "If the resource belongs to multiple categories, separate them by «, » (comma + space)"))
+                                      help=display_help_keywords("application field", "Pharmaceuticals, Organic Synthesis"))
     category = st.text_input("Category",
-                             help=("Enter the main category of the resource.\n\n"
-                                "For example: `Nitrosamines Formation, Mitigation, etc.`\n\n"
-                                "If the resource belongs to multiple categories, separate them by «, » (comma + space)"))
+                            help=display_help_keywords("main category", "Nitrosamines Formation, Mitigation"))
     sub_category = st.text_input("Sub Category", 
-                                help=("Enter the main category of the resource.\n\n"
-                                "For example: `Transitrosation, NOx Mitigation, etc.`\n\n"
-                                "If the resource belongs to multiple categories, separate them by «, » (comma + space)"))
+                                help=display_help_keywords("sub category", "Nitrosation, NOx Mitigation"))
 
     specific_to_nitrosamines = st.selectbox("Is the resource specific to nitrosamines ?", 
                                             ["Yes", "No"], 
                                             help="Precise if the resource is specific to nitrosamines")
 
-keywords = st.text_area("Keywords", help="""Enter the keywords separated by ", " (comma + space)""")
-summary = st.text_area("Summary", help="Enter a brief summary of the resource")
+keywords = st.text_area("Keywords",
+                        help=display_help_keywords("keywords", "Ranitidine, NDMA, Mechanism"))
+
+summary = st.text_area("Summary",help=("Enter a brief summary of the resource\n\n"
+                                        "You can use Markdown to format your summary.\n"
+                                        "[Click here to learn more about Markdown](https://www.markdownguide.org/cheat-sheet/).\n\n"
+                                        "**Examples of Markdown formatting:**\n"
+                                        "- *Italic text*: `*italic*`\n"
+                                        "- **Bold text**: `**bold**`\n"
+                                        "- [Link](https://example.com): `[Link](https://example.com)`"),)
 st.write("")
 
 # User information
