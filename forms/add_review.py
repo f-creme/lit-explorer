@@ -76,9 +76,7 @@ def add_review(resourceID, userID):
                                             "- [Link](https://example.com): `[Link](https://example.com)`"),)
                 username = st.text_input("User", value=st.session_state.userName)
 
-                submit = st.form_submit_button("Save Review", use_container_width=True, type="primary")
-
-                if submit:
+                if st.form_submit_button("Save Review", use_container_width=True, type="primary"):
                     # Add the contribution to the Contributions table
                     contributionID = add_contribution(resourceID, userID, "Add Review", conn)
                     
@@ -111,9 +109,7 @@ def add_review(resourceID, userID):
                 review = st.text_area("Review", value=old_review['Review'])
                 username = st.text_input("User", value=st.session_state.userName)
 
-                submit = st.form_submit_button("Update Review", use_container_width=True, type="primary", help="By submitting this form, you will update your review.")
-
-                if submit:
+                if st.form_submit_button("Update Review", use_container_width=True, type="primary", help="By submitting this form, you will update your review."):
                     # Delete the previous contribution about this resource
                     query = f"DELETE FROM Contributions WHERE ContributionID IN (SELECT ContributionID FROM Contributions WHERE UserID = {userID} AND ResourceID = {resourceID} AND ContributionType LIKE '%Review%');"
                     cursor.execute(query)
@@ -140,5 +136,3 @@ def add_review(resourceID, userID):
 
         finally:
             conn.close()
-
-        st.form_submit_button(" ", type="tertiary")
