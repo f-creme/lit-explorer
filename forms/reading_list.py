@@ -6,7 +6,7 @@ import warnings
 
 warnings.filterwarnings("ignore")
 
-@st.dialog("Add to Reading List", width="large")
+@st.dialog("Add to Reading List", width="small")
 def add_to_reading_list(resource_id):
 
     with st.form("add_to_reading_list"):
@@ -67,7 +67,7 @@ def add_to_reading_list(resource_id):
 
         st.form_submit_button(" ", type="tertiary")
 
-@st.dialog("Modify Reading List", width="large")
+@st.dialog("Modify Reading List", width="small")
 def modify_reading_list(resourceID, resourcePriority, resourceStatus):
     with st.form("modify_reading_list"):
         dict_status = {"Not Started": 1, "In Progress": 2, "Read": 3}
@@ -83,6 +83,10 @@ def modify_reading_list(resourceID, resourcePriority, resourceStatus):
         priority = st.select_slider("Select a priority", options=["Low", "Medium", "High"])
 
         if st.form_submit_button("Update Reading List", use_container_width=True, type="primary"):
+            if status == None:
+                st.error("Please select a status.")
+                st.stop()
+
             if status == "Read":
                 query = f"UPDATE ReadingList SET Status = ?, Priority = ?, DateRead = ? WHERE ResourceID = {resourceID} AND UserID = {st.session_state.userID};"
                 params = (dict_status[status], 0, datetime.now())
@@ -102,5 +106,3 @@ def modify_reading_list(resourceID, resourcePriority, resourceStatus):
                 st.error(f"An error as occured : \n{e}")
                 
             st.success("Resource updated in your reading list.")
-
-        st.form_submit_button(" ", type="tertiary")
