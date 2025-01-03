@@ -144,7 +144,7 @@ if st.session_state.dbPathway:
                 st.write(f"**Category:** {row['Category']}")
                 st.write(f"**Specific to Nitrosamines:** {row['Specific to Nitrosamines']}")
             with col2:
-                st.write(f"**Date:** {(row['Date'])}")
+                st.write(f"**Year of publication:** {int(row['Date'])}")
                 st.write(f"**DOI:** {row['DOI']}")
                 st.write(f"**Application Field:** {row['Application Field']}")
                 st.write(f"**Sub Category:** {row['Sub Category']}")
