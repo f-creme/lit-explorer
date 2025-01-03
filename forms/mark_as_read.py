@@ -6,7 +6,7 @@ import warnings
 
 warnings.filterwarnings("ignore")
 
-@st.dialog("Mark as Read", width="large")
+@st.dialog("Mark as Read", width="small")
 def mark_as_read(resource_id, resource_title):
 
     dict_status = {"Not Started": 1, "In Progress": 2, "Read": 3}
@@ -48,4 +48,4 @@ def mark_as_read(resource_id, resource_title):
         except Exception as e:
             st.error(f"Error: {e}")
 
-        st.form_submit_button("Close")
+        st.form_submit_button("Close", use_container_width=True, help="If the form don't close, clikc anywhere outside the form.")
