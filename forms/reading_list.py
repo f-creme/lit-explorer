@@ -65,7 +65,7 @@ def add_to_reading_list(resource_id):
         except Exception as e:
             st.error(f"Error: {e}")
 
-        st.form_submit_button(" ", type="tertiary")
+        st.form_submit_button("Close", type="secondary", use_container_width=True, help="If the form don't close, click anywhere outside the form.")
 
 @st.dialog("Modify Reading List", width="small")
 def modify_reading_list(resourceID, resourcePriority, resourceStatus):
