@@ -4,7 +4,6 @@ __/pycache/__
 *.pyc
 *.log
 *.vbs
-config.toml
 pages/test.py
 requirements.txt
 *.pdf

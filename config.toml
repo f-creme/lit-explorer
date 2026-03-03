@@ -1,0 +1,17 @@
+[general]
+appName = "LitExplorer"
+version = "0.3.0"
+author = "Florentin Creme"
+email = "contact.fcreme@gmail.com"
+
+[user]
+userName = ""
+userLogin = ""
+userRole = ""
+userMail = ""
+userID = ""
+
+[project]
+projectName = "Nitrosamines"
+projectDescription = "Review of the scientific literature on all topics impacted by nitrosamines in the pharmaceutical industry."
+dbPathway = ""
